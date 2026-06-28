@@ -1,4 +1,4 @@
-import { getPortfolio } from "@/app/db/queries/portfolio";
+/*import { getPortfolio } from "@/app/db/queries/portfolio";
 import { getLatestPrice } from "@/app/db/queries/stock";
 import { getAuthenticatedUserId } from "@/app/lib/auth";
 
@@ -6,7 +6,7 @@ import { getAuthenticatedUserId } from "@/app/lib/auth";
  * Get total portfolio value for the authenticated user.
  * The user id is always taken from the current session, never from the caller.
  */
-export async function getPortfolioValue() {
+/*export async function getPortfolioValue() {
     await getAuthenticatedUserId();
     const holdings = await getPortfolio();
 
@@ -19,4 +19,42 @@ export async function getPortfolioValue() {
     }
 
     return total;
+}*/
+
+
+// app/services/portfolio.ts
+
+import { getPortfolio } from "@/app/db/queries/portfolio";
+import { getLatestPrice } from "@/app/db/queries/stock";
+
+export async function getPortfolioDashboard() {
+    const holdings = await getPortfolio();
+
+    let totalValue = 0;
+
+    const portfolio = await Promise.all(
+        holdings.map(async (holding) => {
+            const latest = await getLatestPrice(holding.company ?? "");
+
+            const currentPrice = Number(latest?.[0]?.close ?? 0);
+
+            const marketValue = currentPrice * holding.quantity;
+
+            totalValue += marketValue;
+
+            return {
+                ...holding,
+                currentPrice,
+                marketValue,
+                profitLoss:
+                    (currentPrice - Number(holding.avgCost)) *
+                    holding.quantity,
+            };
+        })
+    );
+
+    return {
+        totalValue,
+        holdings: portfolio,
+    };
 }

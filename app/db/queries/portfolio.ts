@@ -18,3 +18,4 @@ export async function getPortfolio() {
         .innerJoin(portfolios, eq(portfolioHoldings.portfolioId, portfolios.id))
         .where(eq(portfolios.userId, userId));
 }
+
