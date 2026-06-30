@@ -24,6 +24,7 @@ export interface StockPrice {
 }
 
 export interface PortfolioHolding {
+  id: string;
   company: string;
   ticker: string;
   quantity: number;
@@ -91,6 +92,27 @@ export interface CompanyDashboard {
   company: Company;
   latestPrice: StockPrice | null;
   priceSeries: StockPrice[];
+}
+
+export interface HoldingDetail {
+  id: string;
+  companyId: string;
+  portfolioId: string;
+  company: string | null;
+  ticker: string | null;
+  quantity: number;
+  avgCost: number;
+  createdAt: Date | null;
+}
+
+export interface AddHoldingInput {
+  companyId: string;
+  quantity: number;
+  avgCost: number;
+}
+
+export interface RemoveHoldingInput {
+  holdingId: string;
 }
 
 export interface ApiResponse<T> {

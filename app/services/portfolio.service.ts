@@ -1,6 +1,6 @@
-import { getPortfolio } from "@/app/db/queries/portfolio";
+import { getPortfolio, addHolding, removeHolding, getHoldings } from "@/app/db/queries/portfolio";
 import { getLatestPrice } from "@/app/db/queries/stock";
-import type { PortfolioDashboard, PortfolioHolding } from "@/lib/types";
+import type { PortfolioDashboard, PortfolioHolding, AddHoldingInput, HoldingDetail } from "@/lib/types";
 
 export async function getPortfolioDashboard(): Promise<PortfolioDashboard> {
   const holdings = await getPortfolio();
@@ -24,6 +24,7 @@ export async function getPortfolioDashboard(): Promise<PortfolioDashboard> {
       totalCost += costBasis;
 
       return {
+        id: holding.id ?? "",
         company: holding.company ?? "",
         ticker: holding.ticker ?? "",
         quantity,
@@ -55,4 +56,16 @@ export async function getPortfolioDashboard(): Promise<PortfolioDashboard> {
     largestHoldingWeight,
     holdings: enrichedHoldings,
   };
+}
+
+export async function createHolding(input: AddHoldingInput) {
+  return addHolding(input);
+}
+
+export async function deleteHolding(holdingId: string) {
+  return removeHolding(holdingId);
+}
+
+export async function getRawHoldings(): Promise<HoldingDetail[]> {
+  return getHoldings();
 }
