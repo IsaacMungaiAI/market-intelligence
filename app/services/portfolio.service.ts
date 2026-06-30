@@ -1,60 +1,58 @@
-/*import { getPortfolio } from "@/app/db/queries/portfolio";
-import { getLatestPrice } from "@/app/db/queries/stock";
-import { getAuthenticatedUserId } from "@/app/lib/auth";
-
-/**
- * Get total portfolio value for the authenticated user.
- * The user id is always taken from the current session, never from the caller.
- */
-/*export async function getPortfolioValue() {
-    await getAuthenticatedUserId();
-    const holdings = await getPortfolio();
-
-    let total = 0;
-
-    for (const h of holdings) {
-        const price = await getLatestPrice(h.company ?? "");
-
-        total += Number(price?.[0]?.close ?? 0) * h.quantity;
-    }
-
-    return total;
-}*/
-
-
-// app/services/portfolio.ts
-
 import { getPortfolio } from "@/app/db/queries/portfolio";
 import { getLatestPrice } from "@/app/db/queries/stock";
+import type { PortfolioDashboard, PortfolioHolding } from "@/lib/types";
 
-export async function getPortfolioDashboard() {
-    const holdings = await getPortfolio();
+export async function getPortfolioDashboard(): Promise<PortfolioDashboard> {
+  const holdings = await getPortfolio();
 
-    let totalValue = 0;
+  let totalValue = 0;
+  let totalCost = 0;
 
-    const portfolio = await Promise.all(
-        holdings.map(async (holding) => {
-            const latest = await getLatestPrice(holding.company ?? "");
+  const enrichedHoldings: PortfolioHolding[] = await Promise.all(
+    holdings.map(async (holding) => {
+      const companyId = holding.companyId ?? "";
+      const latest = await getLatestPrice(companyId);
+      const currentPrice = Number(latest?.[0]?.close ?? 0);
+      const avgCost = Number(holding.avgCost ?? 0);
+      const quantity = holding.quantity;
+      const marketValue = currentPrice * quantity;
+      const costBasis = avgCost * quantity;
+      const profitLoss = marketValue - costBasis;
+      const returnPercent = costBasis > 0 ? (profitLoss / costBasis) * 100 : 0;
 
-            const currentPrice = Number(latest?.[0]?.close ?? 0);
+      totalValue += marketValue;
+      totalCost += costBasis;
 
-            const marketValue = currentPrice * holding.quantity;
+      return {
+        company: holding.company ?? "",
+        ticker: holding.ticker ?? "",
+        quantity,
+        avgCost,
+        currentPrice,
+        marketValue,
+        profitLoss,
+        returnPercent,
+      };
+    })
+  );
 
-            totalValue += marketValue;
+  const totalReturn = totalValue - totalCost;
+  const totalReturnPercent = totalCost > 0 ? (totalReturn / totalCost) * 100 : 0;
+  const maxWeightHolding = enrichedHoldings.reduce(
+    (max, h) => (h.marketValue > max.marketValue ? h : max),
+    enrichedHoldings[0] ?? { marketValue: 0 } as PortfolioHolding
+  );
+  const largestHoldingWeight = totalValue > 0
+    ? (maxWeightHolding.marketValue / totalValue) * 100
+    : 0;
 
-            return {
-                ...holding,
-                currentPrice,
-                marketValue,
-                profitLoss:
-                    (currentPrice - Number(holding.avgCost)) *
-                    holding.quantity,
-            };
-        })
-    );
-
-    return {
-        totalValue,
-        holdings: portfolio,
-    };
+  return {
+    totalValue,
+    totalCost,
+    totalReturn,
+    totalReturnPercent,
+    holdingsCount: enrichedHoldings.length,
+    largestHoldingWeight,
+    holdings: enrichedHoldings,
+  };
 }

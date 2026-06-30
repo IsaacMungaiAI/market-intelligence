@@ -1,17 +1,22 @@
 import * as companyQueries from "@/app/db/queries/company";
 import * as stockQueries from "@/app/db/queries/stock";
+import type { Company, CompanyDashboard } from "@/lib/types";
 
-export async function getCompanyDashboard(ticker: string) {
-    const [company] = await companyQueries.getCompanyByTicker(ticker);
+export async function getCompanies(): Promise<Company[]> {
+  return companyQueries.getCompanies() as Promise<Company[]>;
+}
 
-    if (!company) return null;
+export async function getCompanyDashboard(ticker: string): Promise<CompanyDashboard | null> {
+  const [company] = await companyQueries.getCompanyByTicker(ticker);
 
-    const latestPrice = await stockQueries.getLatestPrice(company.id);
-    const priceSeries = await stockQueries.getPriceSeries(company.id);
+  if (!company) return null;
 
-    return {
-        company,
-        latestPrice: latestPrice?.[0],
-        priceSeries,
-    };
+  const latestPrice = await stockQueries.getLatestPrice(company.id);
+  const priceSeries = await stockQueries.getPriceSeries(company.id);
+
+  return {
+    company: company as unknown as Company,
+    latestPrice: (latestPrice?.[0] as CompanyDashboard["latestPrice"]) ?? null,
+    priceSeries: priceSeries as CompanyDashboard["priceSeries"],
+  };
 }

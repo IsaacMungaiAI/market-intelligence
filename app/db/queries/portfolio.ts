@@ -8,6 +8,7 @@ export async function getPortfolio() {
 
     return db
         .select({
+            companyId: companies.id,
             company: companies.name,
             ticker: companies.ticker,
             quantity: portfolioHoldings.quantity,
