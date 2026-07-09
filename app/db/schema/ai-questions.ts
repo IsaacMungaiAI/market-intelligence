@@ -13,7 +13,6 @@ export const aiQuestions = pgTable("ai_questions", {
     id: uuid("id").defaultRandom().primaryKey(),
 
     userId: uuid("user_id")
-        .notNull()
         .references(() => users.id),
 
     companyId: uuid("company_id")
