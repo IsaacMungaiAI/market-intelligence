@@ -25,7 +25,13 @@ function formatChange(value: number): string {
 }
 
 export default async function DashboardPage() {
-  const data: DashboardData = await getDashboardData();
+  let data: DashboardData;
+  try {
+    data = await getDashboardData();
+  } catch (e) {
+    const message = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+    return <div className="p-8 text-red-500">Error loading dashboard: {message}</div>;
+  }
   const { stats, watchlist, signals, sectorAllocation } = data;
 
   const portfolioStats = [
