@@ -119,3 +119,18 @@ export interface ApiResponse<T> {
   data?: T;
   error?: string;
 }
+
+export interface AppNotification {
+  id: string;
+  userId: string;
+  type: string;
+  title: string;
+  body: string;
+  link: string | null;
+  read: boolean;
+  createdAt: Date;
+}
+
+export interface UnreadCount {
+  count: number;
+}

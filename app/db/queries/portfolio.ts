@@ -1,5 +1,5 @@
 import { db } from "@/app/index";
-import { portfolioHoldings, companies, portfolios } from "@/app/db/schema";
+import { portfolioHoldings, companies, portfolios, notifications } from "@/app/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { getAuthenticatedUserId } from "@/app/lib/auth";
 import type { AddHoldingInput, HoldingDetail } from "@/lib/types";
@@ -62,7 +62,16 @@ export async function getOrCreatePortfolio() {
 }
 
 export async function addHolding(input: AddHoldingInput) {
+  const userId = await getAuthenticatedUserId();
   const portfolio = await getOrCreatePortfolio();
+
+  const [company] = await db
+    .select({ name: companies.name, ticker: companies.ticker })
+    .from(companies)
+    .where(eq(companies.id, input.companyId))
+    .limit(1);
+
+  const companyName = company?.name ?? company?.ticker ?? "Unknown";
 
   const existingHolding = await db
     .select()
@@ -94,6 +103,14 @@ export async function addHolding(input: AddHoldingInput) {
       .where(eq(portfolioHoldings.id, existing.id))
       .returning();
 
+    await db.insert(notifications).values({
+      userId,
+      type: "holding_added",
+      title: "Portfolio updated",
+      body: `Added ${input.quantity} more share(s) of ${companyName}`,
+      link: "/dashboard/portfolio",
+    });
+
     return updated[0];
   }
 
@@ -107,13 +124,37 @@ export async function addHolding(input: AddHoldingInput) {
     })
     .returning();
 
+  await db.insert(notifications).values({
+    userId,
+    type: "holding_added",
+    title: "Portfolio updated",
+    body: `Added ${input.quantity} share(s) of ${companyName}`,
+    link: "/dashboard/portfolio",
+  });
+
   return inserted[0];
 }
 
 export async function removeHolding(holdingId: string) {
   const userId = await getAuthenticatedUserId();
 
-  return db
+  const [holding] = await db
+    .select({
+      companyId: portfolioHoldings.companyId,
+      companyName: companies.name,
+      ticker: companies.ticker,
+    })
+    .from(portfolioHoldings)
+    .leftJoin(companies, eq(portfolioHoldings.companyId, companies.id))
+    .where(
+      and(
+        eq(portfolioHoldings.id, holdingId),
+        sql`${portfolioHoldings.portfolioId} IN (SELECT id FROM ${portfolios} WHERE user_id = ${userId})`
+      )
+    )
+    .limit(1);
+
+  await db
     .delete(portfolioHoldings)
     .where(
       and(
@@ -121,4 +162,15 @@ export async function removeHolding(holdingId: string) {
         sql`${portfolioHoldings.portfolioId} IN (SELECT id FROM ${portfolios} WHERE user_id = ${userId})`
       )
     );
+
+  if (holding) {
+    const name = holding.companyName ?? holding.ticker ?? "Unknown";
+    await db.insert(notifications).values({
+      userId,
+      type: "holding_removed",
+      title: "Portfolio updated",
+      body: `Removed ${name} from your portfolio`,
+      link: "/dashboard/portfolio",
+    });
+  }
 }
