@@ -26,4 +26,10 @@ export const financialMetrics = pgTable("financial_metrics", {
     profitMargin: numeric("profit_margin"),
     revenueGrowthYoY: numeric("revenue_growth_yoy"),
     earningsGrowthYoY: numeric("earnings_growth_yoy"),
+
+    revenue: numeric("revenue"),
+    netIncome: numeric("net_income"),
+    totalAssets: numeric("total_assets"),
+    totalLiabilities: numeric("total_liabilities"),
+    equity: numeric("equity"),
 });
