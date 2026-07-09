@@ -4,19 +4,16 @@ import {
     text,
     integer,
     timestamp,
-    pgEnum,
 } from "drizzle-orm/pg-core";
-import { algorithmEnum, frameworkEnum, modelTaskEnum } from "./enums";
-
-export const modelStatusEnum = pgEnum("model_status", [
-    "TRAINING",
-    "ACTIVE",
-    "ARCHIVED",
-    "FAILED",
-]);
+import { companies } from "./companies";
+import { algorithmEnum, frameworkEnum, modelStatusEnum, modelTaskEnum } from "./enums";
 
 export const mlModels = pgTable("ml_models", {
     id: uuid("id").defaultRandom().primaryKey(),
+
+    companyId: uuid("company_id")
+        .notNull()
+        .references(() => companies.id),
 
     name: text("name").notNull(),
 
@@ -24,6 +21,8 @@ export const mlModels = pgTable("ml_models", {
 
     task: modelTaskEnum("task")
         .notNull(),
+
+    target: text("target"),
 
     algorithm: algorithmEnum("algorithm")
         .notNull(),

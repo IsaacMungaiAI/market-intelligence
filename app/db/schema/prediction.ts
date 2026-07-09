@@ -2,6 +2,7 @@ import {
     pgTable,
     uuid,
     numeric,
+    text,
     boolean,
     timestamp,
 } from "drizzle-orm/pg-core";
@@ -21,6 +22,8 @@ export const predictions = pgTable("predictions", {
     companyId: uuid("company_id")
         .notNull()
         .references(() => companies.id),
+
+    target: text("target"),
 
     predictedValue: numeric("predicted_value").notNull(),
 
