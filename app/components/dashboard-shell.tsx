@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/app/components/theme-toggle";
+import { NotificationBell } from "@/app/components/notification-bell";
 import { cn } from "@/lib/utils";
 
 const navigation = [
@@ -112,7 +113,8 @@ export function DashboardShell({ children, userEmail }: DashboardShellProps) {
                             </h1>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                            <NotificationBell />
                             <ThemeToggle />
                             <Button
                                 className="hidden sm:inline-flex"
