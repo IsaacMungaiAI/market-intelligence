@@ -1,5 +1,5 @@
 import { db } from "@/app/index";
-import { predictions, companies, stockPrices } from "@/app/db/schema";
+import { predictions, predictionRuns, companies, stockPrices } from "@/app/db/schema";
 import { desc, eq, sql } from "drizzle-orm";
 import type { Signal } from "@/lib/types";
 
@@ -22,13 +22,14 @@ export async function getSignals(): Promise<Signal[]> {
     .select({
       companyName: companies.name,
       ticker: companies.ticker,
-      target: predictions.target,
-      predictionValue: predictions.predictionValue,
-      confidenceScore: predictions.confidenceScore,
-      horizon: predictions.horizon,
+      target: predictionRuns.predictionType,
+      predictionValue: predictions.predictedValue,
+      confidenceScore: predictions.confidence,
+      horizon: predictionRuns.targetDate,
     })
     .from(predictions)
     .innerJoin(companies, eq(predictions.companyId, companies.id))
+    .innerJoin(predictionRuns, eq(predictions.runId, predictionRuns.id))
     .orderBy(desc(predictions.createdAt))
     .limit(5);
 

@@ -5,9 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
+    Bot,
     BriefcaseBusiness,
     Building2,
     Eye,
+    FileText,
     LayoutDashboard,
     LogOut,
     RadioTower,
@@ -23,6 +25,8 @@ const navigation = [
     { name: "Watchlists", href: "/dashboard/watchlists", icon: Eye },
     { name: "Signals", href: "/dashboard/signals", icon: RadioTower },
     { name: "Companies", href: "/dashboard/companies", icon: Building2 },
+    { name: "AI Analyst", href: "/dashboard/ai-analyst", icon: Bot },
+    { name: "AI Summaries", href: "/dashboard/ai-summaries", icon: FileText },
 ];
 
 type DashboardShellProps = {

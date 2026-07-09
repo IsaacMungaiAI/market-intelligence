@@ -3,6 +3,7 @@ import {
     uuid,
     text,
     timestamp,
+    uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 import { companies } from "./companies";
@@ -25,4 +26,9 @@ export const aiCompanySummaries = pgTable("ai_company_summaries", {
     createdAt: timestamp("created_at").defaultNow(),
 
     expiresAt: timestamp("expires_at"),
-});
+}, (table) => ({
+    companySummaryUnique: uniqueIndex("ai_summary_unique").on(
+        table.companyId,
+        table.summaryType,
+    ),
+}));
