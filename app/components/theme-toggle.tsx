@@ -1,38 +1,27 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
-    const [theme, setTheme] = useState<"light" | "dark">("dark");
+    const [theme, setTheme] = useState<"light" | "dark">(() => {
+        if (typeof window === "undefined") return "dark";
+        const saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") return saved;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+    });
 
-    const mountedRef = useRef(false);
-
-    useEffect(() => {
-        if (!mountedRef.current) {
-            mountedRef.current = true;
-            return;
-        }
-        const savedTheme = localStorage.getItem("theme");
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const initialTheme = savedTheme === "light" || savedTheme === "dark"
-            ? savedTheme
-            : prefersDark
-              ? "dark"
-              : "light";
-
-        setTheme(initialTheme);
-        document.documentElement.classList.toggle("dark", initialTheme === "dark");
+    const toggleTheme = useCallback(() => {
+        setTheme((prev) => {
+            const next = prev === "dark" ? "light" : "dark";
+            localStorage.setItem("theme", next);
+            document.documentElement.classList.toggle("dark", next === "dark");
+            return next;
+        });
     }, []);
-
-    function toggleTheme() {
-        const nextTheme = theme === "dark" ? "light" : "dark";
-
-        setTheme(nextTheme);
-        localStorage.setItem("theme", nextTheme);
-        document.documentElement.classList.toggle("dark", nextTheme === "dark");
-    }
 
     return (
         <Button
