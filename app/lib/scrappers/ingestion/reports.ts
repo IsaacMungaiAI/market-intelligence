@@ -44,7 +44,7 @@ export async function ingestReports(symbol?: string): Promise<Report[]> {
                     let m
                     while ((m = linkRe.exec(text))) {
                         const url = m[1]
-                        reports.push({ symbol, period: undefined, url, title: undefined, publishedAt: undefined })
+                        reports.push({ symbol: symbol ?? '', period: undefined, url, title: undefined, publishedAt: undefined })
                     }
                     if (reports.length) return reports
                 }
