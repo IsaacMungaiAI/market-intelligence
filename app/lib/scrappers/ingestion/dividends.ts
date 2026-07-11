@@ -1,4 +1,4 @@
-import { fetchJsonFromNSE } from '../nse/client'
+import { fetchFromNSE, fetchJsonFromNSE } from '../nse/client'
 import type { Dividend } from '../nse/types'
 
 export async function ingestDividends(symbol?: string): Promise<Dividend[]> {
