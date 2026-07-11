@@ -1,4 +1,5 @@
 import { fetchFromNSE, fetchJsonFromNSE } from '../nse/client'
+
 import type { Dividend } from '../nse/types'
 
 export async function ingestDividends(symbol?: string): Promise<Dividend[]> {
@@ -8,7 +9,7 @@ export async function ingestDividends(symbol?: string): Promise<Dividend[]> {
 
         for (const p of candidates) {
             try {
-                const data: any = await fetchJsonFromNSE(p).catch(() => null)
+                const data: Record<string, unknown> | unknown[] | null = await fetchJsonFromNSE(p).catch(() => null)
                 if (!data) continue
 
                 const announcements = Array.isArray(data) ? data : data.announcements || data.items || []
@@ -25,7 +26,7 @@ export async function ingestDividends(symbol?: string): Promise<Dividend[]> {
                         currency: a.currency || undefined,
                     })
                 }
-            } catch (e) {
+            } catch {
                 continue
             }
         }
@@ -40,7 +41,7 @@ export async function ingestDividends(symbol?: string): Promise<Dividend[]> {
                     items.push({ symbol: m[1], amount: undefined })
                 }
             }
-        } catch (_) {
+        } catch {
             // ignore
         }
 

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth } from "@/app/lib/auth";
 import { getNotifications, getUnreadCount } from "@/app/services/notification.service";
 import type { ApiResponse, AppNotification, UnreadCount } from "@/lib/types";
 

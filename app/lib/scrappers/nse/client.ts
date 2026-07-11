@@ -52,7 +52,7 @@ export async function fetchJsonFromNSE(path: string, params?: Record<string, str
     const text = await res.text()
     try {
         return JSON.parse(text)
-    } catch (e) {
+    } catch {
         throw new Error('Failed to parse JSON from NSE response')
     }
 }

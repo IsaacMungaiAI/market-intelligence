@@ -1,6 +1,6 @@
 import { getPortfolioDashboard } from "@/app/services/portfolio.service";
 import { getWatchlistWithPrices } from "@/app/services/watchlist.service";
-import { getSignals, getSignalsCount } from "@/app/services/signal.service";
+import { getSignals } from "@/app/services/signal.service";
 import { getWatchlistCount } from "@/app/db/queries/watchlist";
 import { getHoldingsCount } from "@/app/db/queries/dashboard";
 import { db } from "@/app/index";

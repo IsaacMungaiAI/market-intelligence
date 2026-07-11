@@ -2,18 +2,18 @@ import { fetchJsonFromNSE } from '../nse/client'
 import type { Price } from '../nse/types'
 
 // Cache to avoid multiple API calls
-let cachedStocks: any[] | null = null
+let cachedStocks: Array<{ ticker?: string; price?: string | number; volume?: string | number }> | null = null
 let cacheTimestamp: number = 0
 const CACHE_DURATION = 60000 // 1 minute
 
-export async function ingestPrices(symbol: string, from?: string, to?: string): Promise<Price[]> {
+export async function ingestPrices(symbol: string): Promise<Price[]> {
     if (!symbol) return []
 
     try {
         // Fetch all stocks from the API (this is the only working endpoint)
         const now = Date.now()
         if (!cachedStocks || (now - cacheTimestamp) > CACHE_DURATION) {
-            const res: any = await fetchJsonFromNSE('/stocks', { limit: '1000' })
+            const res: { success?: boolean; data?: Array<{ ticker?: string; price?: string | number; volume?: string | number }> } | null = await fetchJsonFromNSE('/stocks', { limit: '1000' })
             if (res && res.success && res.data) {
                 cachedStocks = res.data
                 cacheTimestamp = now
@@ -23,7 +23,7 @@ export async function ingestPrices(symbol: string, from?: string, to?: string): 
         }
 
         // Find the specific stock by symbol
-        const stock = cachedStocks?.find((s: any) => s.ticker === symbol)
+        const stock = cachedStocks?.find((s) => s.ticker === symbol)
         if (!stock) return []
 
         const price = parseFloat(String(stock.price || ''))

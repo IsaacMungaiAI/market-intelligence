@@ -8,7 +8,17 @@ export async function savePrices(prices: Price[], source = 'nse') {
     if (!prices || prices.length === 0) return 0
 
     // Attempt to resolve company ids by ticker first
-    const rowsToInsert = [] as any[]
+    const rowsToInsert: Array<{
+        companyId: string;
+        date: string;
+        open: number | null;
+        high: number | null;
+        low: number | null;
+        close: number;
+        adjustedClose: number;
+        volume: number | null;
+        source: string;
+    }> = []
 
     for (const p of prices) {
         // Find company by ticker

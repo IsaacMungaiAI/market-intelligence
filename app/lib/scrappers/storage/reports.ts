@@ -1,6 +1,3 @@
-import { db } from '@/app/index'
-import { companies } from '@/app/db/schema'
-
 import type { Report } from '../nse/types'
 
 export async function saveReports(reports: Report[]) {

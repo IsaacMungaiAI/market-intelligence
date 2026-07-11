@@ -7,7 +7,15 @@ import type { Dividend } from '../nse/types'
 export async function saveDividends(items: Dividend[], source = 'nse') {
     if (!items || items.length === 0) return 0
 
-    const rows: any[] = []
+    const rows: Array<{
+        companyId: string;
+        exDate: string | null;
+        paymentDate: string | null;
+        amountPerShare: number | null;
+        currency: string;
+        type: string | null;
+        source: string;
+    }> = []
 
     for (const d of items) {
         const [company] = await db.select().from(companies).where(eq(companies.ticker, d.symbol)).limit(1)

@@ -1,5 +1,5 @@
 import { db } from "@/app/index";
-import { portfolios, portfolioHoldings, watchlists } from "@/app/db/schema";
+import { portfolios, portfolioHoldings } from "@/app/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { getAuthenticatedUserId } from "@/app/lib/auth";
 

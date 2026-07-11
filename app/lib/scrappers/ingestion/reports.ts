@@ -33,7 +33,7 @@ export async function ingestReports(symbol?: string): Promise<Report[]> {
                             })
                         }
                         if (reports.length) return reports
-                    } catch (_) {
+                    } catch {
                         // not JSON
                     }
                 }
@@ -48,7 +48,7 @@ export async function ingestReports(symbol?: string): Promise<Report[]> {
                     }
                     if (reports.length) return reports
                 }
-            } catch (e) {
+            } catch {
                 continue
             }
         }

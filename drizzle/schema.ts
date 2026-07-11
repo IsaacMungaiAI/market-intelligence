@@ -1,5 +1,4 @@
 import { pgTable, unique, uuid, text, timestamp, foreignKey, integer, boolean, date, numeric, index, uniqueIndex, pgEnum } from "drizzle-orm/pg-core"
-import { sql } from "drizzle-orm"
 
 export const algorithm = pgEnum("algorithm", ['XGBOOST', 'LIGHTGBM', 'RANDOM_FOREST', 'PROPHET', 'LSTM', 'GRU', 'LINEAR_REGRESSION'])
 export const experimentStatus = pgEnum("experiment_status", ['RUNNING', 'COMPLETED', 'FAILED', 'STOPPED'])
