@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import {
   Table,
   TableBody,
@@ -57,7 +58,19 @@ export function WatchlistTable({ items }: WatchlistTableProps) {
       const res = await fetch(`/api/watchlists?id=${id}`, { method: "DELETE" })
       if (res.ok) {
         router.refresh()
+        toast.success("Removed from watchlist", {
+          description: "The company is no longer being tracked.",
+        })
+      } else {
+        const body = await res.json().catch(() => ({}))
+        toast.error("Failed to remove from watchlist", {
+          description: body.error ?? "Please try again.",
+        })
       }
+    } catch {
+      toast.error("Failed to remove from watchlist", {
+        description: "Network error. Please try again.",
+      })
     } finally {
       setDeleting(null)
     }
