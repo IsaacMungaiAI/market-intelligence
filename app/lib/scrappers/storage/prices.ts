@@ -11,11 +11,11 @@ export async function savePrices(prices: Price[], source = 'nse') {
     const rowsToInsert: Array<{
         companyId: string;
         date: string;
-        open: number | null;
-        high: number | null;
-        low: number | null;
-        close: number;
-        adjustedClose: number;
+        open: string | null;
+        high: string | null;
+        low: string | null;
+        close: string;
+        adjustedClose: string;
         volume: number | null;
         source: string;
     }> = []
@@ -28,11 +28,11 @@ export async function savePrices(prices: Price[], source = 'nse') {
         rowsToInsert.push({
             companyId: company.id,
             date: p.date,
-            open: p.open ?? null,
-            high: p.high ?? null,
-            low: p.low ?? null,
-            close: p.close,
-            adjustedClose: p.close,
+            open: p.open != null ? String(p.open) : null,
+            high: p.high != null ? String(p.high) : null,
+            low: p.low != null ? String(p.low) : null,
+            close: String(p.close),
+            adjustedClose: String(p.close),
             volume: p.volume ?? null,
             source,
         })

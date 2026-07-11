@@ -11,7 +11,7 @@ export async function saveDividends(items: Dividend[], source = 'nse') {
         companyId: string;
         exDate: string | null;
         paymentDate: string | null;
-        amountPerShare: number | null;
+        amountPerShare: string | null;
         currency: string;
         type: string | null;
         source: string;
@@ -25,7 +25,7 @@ export async function saveDividends(items: Dividend[], source = 'nse') {
             companyId: company.id,
             exDate: d.exDate ?? null,
             paymentDate: d.recordDate ?? null,
-            amountPerShare: d.amount ?? null,
+            amountPerShare: d.amount != null ? String(d.amount) : null,
             currency: d.currency ?? 'KES',
             type: null,
             source,
