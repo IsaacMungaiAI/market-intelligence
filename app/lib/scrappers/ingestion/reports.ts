@@ -25,9 +25,9 @@ export async function ingestReports(symbol?: string): Promise<Report[]> {
                         const items = Array.isArray(data) ? data : data.reports || data.items || []
                         for (const it of items) {
                             reports.push({
-                                symbol: it.symbol || symbol,
-                                period: it.period || it.date || undefined,
-                                url: it.url || it.link || undefined,
+                                symbol: it.symbol || symbol || '',
+                                period: it.period || it.date || '',
+                                url: it.url || it.link || '',
                                 title: it.title || it.name || undefined,
                                 publishedAt: it.publishedAt || it.date || undefined,
                             })
@@ -44,7 +44,7 @@ export async function ingestReports(symbol?: string): Promise<Report[]> {
                     let m
                     while ((m = linkRe.exec(text))) {
                         const url = m[1]
-                        reports.push({ symbol: symbol ?? '', period: undefined, url, title: undefined, publishedAt: undefined })
+                        reports.push({ symbol: symbol ?? '', period: '', url: url ?? '', title: undefined, publishedAt: undefined })
                     }
                     if (reports.length) return reports
                 }

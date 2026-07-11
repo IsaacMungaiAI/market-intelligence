@@ -1,5 +1,6 @@
 import { db } from '@/app/index'
 import { dividends, companies } from '@/app/db/schema'
+import { eq } from 'drizzle-orm'
 
 import type { Dividend } from '../nse/types'
 
@@ -9,7 +10,7 @@ export async function saveDividends(items: Dividend[], source = 'nse') {
     const rows: any[] = []
 
     for (const d of items) {
-        const [company] = await db.select().from(companies).where(companies.ticker.eq(d.symbol)).limit(1)
+        const [company] = await db.select().from(companies).where(eq(companies.ticker, d.symbol)).limit(1)
         if (!company) continue
 
         rows.push({

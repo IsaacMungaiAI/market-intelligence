@@ -1,5 +1,6 @@
 import { db } from '@/app/index'
 import { stockPrices, companies } from '@/app/db/schema'
+import { eq } from 'drizzle-orm'
 
 import type { Price } from '../nse/types'
 
@@ -11,7 +12,7 @@ export async function savePrices(prices: Price[], source = 'nse') {
 
     for (const p of prices) {
         // Find company by ticker
-        const [company] = await db.select().from(companies).where(companies.ticker.eq(p.symbol)).limit(1)
+        const [company] = await db.select().from(companies).where(eq(companies.ticker, p.symbol)).limit(1)
         if (!company) continue
 
         rowsToInsert.push({
