@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import {
   Dialog,
   DialogContent,
@@ -70,8 +71,13 @@ export function AddHoldingDialog({ companies }: AddHoldingDialogProps) {
       setQuantity("")
       setAvgCost("")
       router.refresh()
+      toast.success("Holding added", {
+        description: `${qty} shares added to your portfolio.`,
+      })
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.")
+      const message = err instanceof Error ? err.message : "Something went wrong."
+      setError(message)
+      toast.error("Failed to add holding", { description: message })
     } finally {
       setLoading(false)
     }

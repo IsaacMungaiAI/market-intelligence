@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -84,16 +85,22 @@ export default function AISummariesPage() {
       if (json.error) {
         setError(json.error);
         setSummary(null);
+        toast.error("Generation failed", { description: json.error });
       } else {
         const content =
           typeof json.data === "object" && json.data !== null
             ? JSON.stringify(json.data, null, 2)
             : String(json.data ?? "Generated");
         setSummary(content);
+        toast.success("Summary generated", {
+          description: `${summaryLabels[summaryType]} is ready.`,
+        });
       }
     } catch {
-      setError("Failed to reach AI service.");
+      const msg = "Failed to reach AI service.";
+      setError(msg);
       setSummary(null);
+      toast.error("Generation failed", { description: msg });
     } finally {
       setLoading(false);
     }

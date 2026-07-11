@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import {
   Table,
   TableBody,
@@ -56,7 +57,19 @@ export function HoldingsTable({ holdings }: HoldingsTableProps) {
       const res = await fetch(`/api/portfolio?id=${id}`, { method: "DELETE" })
       if (res.ok) {
         router.refresh()
+        toast.success("Holding removed", {
+          description: "The position has been removed from your portfolio.",
+        })
+      } else {
+        const body = await res.json().catch(() => ({}))
+        toast.error("Failed to remove holding", {
+          description: body.error ?? "Please try again.",
+        })
       }
+    } catch {
+      toast.error("Failed to remove holding", {
+        description: "Network error. Please try again.",
+      })
     } finally {
       setDeleting(null)
     }

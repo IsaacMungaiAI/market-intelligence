@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import {
   Dialog,
   DialogContent,
@@ -54,8 +55,13 @@ export function AddToWatchlistDialog({ companies }: AddToWatchlistDialogProps) {
       setOpen(false)
       setCompanyId("")
       router.refresh()
+      toast.success("Added to watchlist", {
+        description: "Company is now being tracked.",
+      })
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.")
+      const message = err instanceof Error ? err.message : "Something went wrong."
+      setError(message)
+      toast.error("Failed to add to watchlist", { description: message })
     } finally {
       setLoading(false)
     }
