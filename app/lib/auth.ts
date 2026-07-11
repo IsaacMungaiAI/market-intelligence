@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth-options";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export async function getSession() {
     return getServerSession(authOptions);
@@ -20,7 +20,7 @@ export async function requireSession() {
  * Middleware to protect API routes
  * Returns the session if authenticated, otherwise returns a 401 error response
  */
-export async function requireAuth(req: NextRequest) {
+export async function requireAuth() {
     const session = await getSession();
 
     if (!session?.user?.id) {

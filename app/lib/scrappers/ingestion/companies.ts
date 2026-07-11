@@ -1,26 +1,5 @@
-import { fetchFromNSE, fetchJsonFromNSE } from '../nse/client'
+import { fetchJsonFromNSE } from '../nse/client'
 import type { Company } from '../nse/types'
-
-function splitCsvLine(line: string) {
-    const result: string[] = []
-    let cur = ''
-    let inQuotes = false
-    for (let i = 0; i < line.length; i++) {
-        const ch = line[i]
-        if (ch === '"') {
-            inQuotes = !inQuotes
-            continue
-        }
-        if (ch === ',' && !inQuotes) {
-            result.push(cur)
-            cur = ''
-            continue
-        }
-        cur += ch
-    }
-    result.push(cur)
-    return result.map((s) => s.trim())
-}
 
 export async function ingestCompanies(): Promise<Company[]> {
     try {
@@ -31,8 +10,7 @@ export async function ingestCompanies(): Promise<Company[]> {
 
         while (true) {
             const params = { limit: String(limit), skip: String(skip) }
-            const res: any = await fetchJsonFromNSE('/stocks', params).catch((e) => {
-                console.error('fetchJsonFromNSE /stocks error', e)
+            const res: { success?: boolean; data?: Array<{ ticker?: string; name?: string; company?: string }> } | null = await fetchJsonFromNSE('/stocks', params).catch(() => {
                 return null
             })
             if (!res) {

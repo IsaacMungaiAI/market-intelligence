@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
             if (!account || !user.email) return false;
 
             // 1. Check if user exists
-            let existingUser = await db
+            const existingUser = await db
                 .select()
                 .from(users)
                 .where(eq(users.email, user.email))

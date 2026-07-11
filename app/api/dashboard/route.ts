@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { requireAuth } from "@/app/lib/auth";
 import { getDashboardData } from "@/app/services/dashboard.service";
 import type { ApiResponse, DashboardData } from "@/lib/types";
 

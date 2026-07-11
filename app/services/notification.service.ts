@@ -92,8 +92,6 @@ export async function queuePushNotification(userId: string, title: string, body:
 }
 
 export async function processOutbox() {
-    const userId = await getAuthenticatedUserId();
-
     return db
         .select()
         .from(notificationOutbox)

@@ -20,8 +20,8 @@ async function runAll() {
         const result = await syncCompaniesJob()
         console.log(`Companies found=${result.found} persisted=${result.persisted}`)
 
-        const companies = (result as any).companies || []
-        const tickers = companies.map((c: any) => c.symbol).filter(Boolean).slice(0, MAX_TICKERS)
+        const companies = (result as { companies?: Array<{ symbol?: string }> }).companies || []
+        const tickers = companies.map((c) => c.symbol).filter(Boolean).slice(0, MAX_TICKERS)
 
         for (const t of tickers) {
             console.log(`Processing ticker ${t}`)

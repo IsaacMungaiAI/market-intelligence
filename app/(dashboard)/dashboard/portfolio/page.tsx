@@ -9,7 +9,6 @@ import { getPortfolioDashboard } from "@/app/services/portfolio.service";
 import { getCompanies } from "@/app/services/company.service";
 import { AddHoldingDialog } from "@/app/components/add-holding-dialog";
 import { HoldingsTable } from "@/app/components/holdings-table";
-import type { PortfolioDashboard, Company } from "@/lib/types";
 
 export default async function PortfolioPage() {
   const [portfolio, companies] = await Promise.all([

@@ -1,5 +1,6 @@
 import { db } from '@/app/index'
 import { stockPrices, companies } from '@/app/db/schema'
+import { eq } from 'drizzle-orm'
 
 import type { Price } from '../nse/types'
 
@@ -7,21 +8,31 @@ export async function savePrices(prices: Price[], source = 'nse') {
     if (!prices || prices.length === 0) return 0
 
     // Attempt to resolve company ids by ticker first
-    const rowsToInsert = [] as any[]
+    const rowsToInsert: Array<{
+        companyId: string;
+        date: string;
+        open: string | null;
+        high: string | null;
+        low: string | null;
+        close: string;
+        adjustedClose: string;
+        volume: number | null;
+        source: string;
+    }> = []
 
     for (const p of prices) {
         // Find company by ticker
-        const [company] = await db.select().from(companies).where(companies.ticker.eq(p.symbol)).limit(1)
+        const [company] = await db.select().from(companies).where(eq(companies.ticker, p.symbol)).limit(1)
         if (!company) continue
 
         rowsToInsert.push({
             companyId: company.id,
             date: p.date,
-            open: p.open ?? null,
-            high: p.high ?? null,
-            low: p.low ?? null,
-            close: p.close,
-            adjustedClose: p.close,
+            open: p.open != null ? String(p.open) : null,
+            high: p.high != null ? String(p.high) : null,
+            low: p.low != null ? String(p.low) : null,
+            close: String(p.close),
+            adjustedClose: String(p.close),
             volume: p.volume ?? null,
             source,
         })

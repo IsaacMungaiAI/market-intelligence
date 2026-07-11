@@ -1,6 +1,6 @@
 import { db } from "@/app/index";
 import { predictions, predictionRuns, companies, stockPrices } from "@/app/db/schema";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import type { Signal } from "@/lib/types";
 
 export async function getSignals(): Promise<Signal[]> {

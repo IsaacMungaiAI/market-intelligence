@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth } from "@/app/lib/auth";
 import { getPortfolioDashboard, createHolding, deleteHolding } from "@/app/services/portfolio.service";
 import type { ApiResponse, PortfolioDashboard, AddHoldingInput } from "@/lib/types";
 

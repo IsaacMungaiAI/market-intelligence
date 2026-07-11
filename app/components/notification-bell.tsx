@@ -16,8 +16,8 @@ import type { AppNotification, UnreadCount } from "@/lib/types";
 export function NotificationBell() {
     const [notifications, setNotifications] = React.useState<AppNotification[]>([]);
     const [unreadCount, setUnreadCount] = React.useState(0);
-    const [loading, setLoading] = React.useState(true);
     const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(true);
 
     const fetchUnreadCount = React.useCallback(async () => {
         try {
@@ -32,8 +32,8 @@ export function NotificationBell() {
     }, []);
 
     const fetchNotifications = React.useCallback(async () => {
-        setLoading(true);
         try {
+            setLoading(true);
             const [listRes, unreadRes] = await Promise.all([
                 fetch("/api/notifications"),
                 fetch("/api/notifications?unread=true"),
@@ -54,14 +54,25 @@ export function NotificationBell() {
         }
     }, []);
 
+    const unreadCountMountedRef = React.useRef(false);
     React.useEffect(() => {
+        if (!unreadCountMountedRef.current) {
+            unreadCountMountedRef.current = true;
+            return;
+        }
         fetchUnreadCount();
         const interval = setInterval(fetchUnreadCount, 30000);
         return () => clearInterval(interval);
     }, [fetchUnreadCount]);
 
+    const openMountedRef = React.useRef(false);
     React.useEffect(() => {
+        if (!openMountedRef.current) {
+            openMountedRef.current = true;
+            return;
+        }
         if (open) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- setLoading is async-gated via fetchNotifications
             fetchNotifications();
         }
     }, [open, fetchNotifications]);

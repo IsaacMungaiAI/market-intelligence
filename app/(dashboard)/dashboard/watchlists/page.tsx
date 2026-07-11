@@ -4,7 +4,6 @@ import { getWatchlistWithPrices } from "@/app/services/watchlist.service";
 import { getCompanies } from "@/app/services/company.service";
 import { AddToWatchlistDialog } from "@/app/components/add-watchlist-dialog";
 import { WatchlistTable } from "@/app/components/watchlist-table";
-import type { WatchlistItem, Company } from "@/lib/types";
 
 export default async function WatchlistsPage() {
   const [watchlist, companies] = await Promise.all([

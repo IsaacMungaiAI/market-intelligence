@@ -1,6 +1,6 @@
 import { db } from "@/app/index";
-import { companies, stockPrices } from "@/app/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { companies } from "@/app/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function getCompanies() {
     return db.select().from(companies);

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth } from "@/app/lib/auth";
 import { getWatchlistWithPrices } from "@/app/services/watchlist.service";
 import { addToWatchlist, removeFromWatchlist } from "@/app/db/queries/watchlist";
 import type { ApiResponse, WatchlistItem } from "@/lib/types";
