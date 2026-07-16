@@ -206,7 +206,7 @@ export const portfolios = pgTable("portfolios", {
 			columns: [table.userId],
 			foreignColumns: [users.id],
 			name: "portfolios_user_id_users_id_fk"
-		}),
+		}).onDelete("cascade"),
 ]);
 
 export const financialReports = pgTable("financial_reports", {
@@ -427,7 +427,7 @@ export const aiQuestions = pgTable("ai_questions", {
 			columns: [table.userId],
 			foreignColumns: [users.id],
 			name: "ai_questions_user_id_users_id_fk"
-		}),
+		}).onDelete("cascade"),
 	foreignKey({
 			columns: [table.companyId],
 			foreignColumns: [companies.id],

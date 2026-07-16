@@ -43,7 +43,7 @@ function NavLinks({
     onLinkClick?: () => void;
 }) {
     return (
-        <nav className="space-y-1">
+        <nav className="space-y-1" data-tour="sidebar-nav">
             {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive =
@@ -226,7 +226,9 @@ export function DashboardShell({ children, userEmail }: DashboardShellProps) {
                 <main className="p-4 sm:p-6 lg:p-8">{children}</main>
             </div>
 
-            <AIChatWidget />
+            <div data-tour="ai-chat-trigger">
+              <AIChatWidget />
+            </div>
         </div>
     );
 }

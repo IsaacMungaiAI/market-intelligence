@@ -69,7 +69,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <Card>
+      <Card data-tour="overview-hero">
         <CardContent className="grid gap-8 p-6 lg:grid-cols-[1.4fr_0.6fr] lg:p-8">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-emerald-600 dark:text-emerald-300">
