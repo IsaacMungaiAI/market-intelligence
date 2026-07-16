@@ -27,6 +27,22 @@ export const authOptions: NextAuthOptions = {
     },
 
     callbacks: {
+        async authorized({ token }) {
+            if (!token?.userId) return false;
+
+            try {
+                const dbUser = await db
+                    .select()
+                    .from(users)
+                    .where(eq(users.id, token.userId as string))
+                    .limit(1);
+
+                return !!dbUser[0];
+            } catch {
+                return false;
+            }
+        },
+
         async signIn({ user, account }) {
             if (!account || !user.email) return false;
 

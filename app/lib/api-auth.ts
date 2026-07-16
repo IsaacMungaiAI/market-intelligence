@@ -11,7 +11,7 @@ export async function withAuth(req: NextRequest) {
         secret: process.env.NEXTAUTH_SECRET
     });
 
-    if (!token?.sub) {
+    if (!token?.userId) {
         return {
             error: NextResponse.json(
                 { error: "Unauthorized" },
@@ -24,7 +24,7 @@ export async function withAuth(req: NextRequest) {
     return {
         error: null,
         session: {
-            userId: token.sub,
+            userId: token.userId as string,
             email: token.email,
         },
     };
