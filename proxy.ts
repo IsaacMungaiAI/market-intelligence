@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { db } from "@/app/index";
+import { users } from "@/app/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function proxy(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -10,9 +13,28 @@ export async function proxy(req: NextRequest) {
     const isApiRoute = req.nextUrl.pathname.startsWith("/api");
     const isAuthApiRoute = req.nextUrl.pathname.startsWith("/api/auth");
 
+    // Validate that the user still exists in the database.
+    if (token?.userId) {
+        const dbUser = await db
+            .select()
+            .from(users)
+            .where(eq(users.id, token.userId as string))
+            .limit(1);
+
+        if (!dbUser[0]) {
+            if (isApiRoute) {
+                return NextResponse.json(
+                    { error: "Unauthorized" },
+                    { status: 401 }
+                );
+            }
+            return NextResponse.redirect(new URL("/auth/unauthorized", req.url));
+        }
+    }
+
     // Redirect to signin if accessing dashboard without token.
     if (!token && isDashboard) {
-        return NextResponse.redirect(new URL("/auth/signin", req.url));
+        return NextResponse.redirect(new URL("/auth/unauthorized", req.url));
     }
 
     // Redirect to dashboard if already signed in and trying to access signin page.
