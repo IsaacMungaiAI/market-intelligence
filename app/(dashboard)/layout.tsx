@@ -1,6 +1,7 @@
 import { getSession } from "@/app/lib/auth";
 import { redirect } from "next/navigation";
 import { DashboardShell } from "@/app/components/dashboard-shell";
+import { OnboardingProvider } from "@/app/components/onboarding/onboarding-provider";
 
 export default async function DashboardLayout({
     children,
@@ -15,7 +16,7 @@ export default async function DashboardLayout({
 
     return (
         <DashboardShell userEmail={session.user?.email}>
-            {children}
+            <OnboardingProvider>{children}</OnboardingProvider>
         </DashboardShell>
     );
 }

@@ -22,7 +22,9 @@ export default async function WatchlistsPage() {
             Track priority counters, market movement, and companies you want to monitor closely.
           </p>
         </div>
-        <AddToWatchlistDialog companies={companies} />
+        <div data-tour="add-watchlist-btn">
+          <AddToWatchlistDialog companies={companies} />
+        </div>
       </div>
 
       {watchlist.length === 0 ? (

@@ -27,7 +27,9 @@ export default async function PortfolioPage() {
             Monitor holdings, allocation and portfolio performance.
           </p>
         </div>
-        <AddHoldingDialog companies={companies} />
+        <div data-tour="add-holding-btn">
+          <AddHoldingDialog companies={companies} />
+        </div>
       </div>
 
       {isEmpty ? (
